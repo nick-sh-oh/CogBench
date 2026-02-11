@@ -100,9 +100,15 @@ def run_benchmark(engine):
     subprocess.run(['python3', 'phenotype_comp.py', '--models', args.engine] + args.compare_with + 
                    ['--interest', 'behaviour', '--store_id', 'full_run', '--print_scores', '--print_scores_for', 'human', 'random', args.engine] + args.compare_with)
     print(f'Performance scores:')
-    subprocess.run(['python3', 'phenotype_comp.py', '--models', args.engine] + args.compare_with + 
-                   ['--interest', 'performance', '--store_id', 'full_run', '--print_scores', '--print_scores_for', 'human', 'random', args.engine] + args.compare_with) 
-    
+    subprocess.run(['python3', 'phenotype_comp.py', '--models', args.engine] + args.compare_with +
+                   ['--interest', 'performance', '--store_id', 'full_run', '--print_scores', '--print_scores_for', 'human', 'random', args.engine] + args.compare_with)
+
+    # Grouped bar charts + MDS embedding (Centaur-style plots)
+    print('Grouped comparison plots:')
+    subprocess.run(['python3', 'grouped_comparison.py',
+                    '--models', args.engine] + args.compare_with +
+                   ['--interest', 'both', '--embedding', '--store_id', 'full_run'])
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run the entire benchmark for a chosen LLM.')
