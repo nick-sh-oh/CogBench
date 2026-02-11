@@ -44,7 +44,7 @@ def get_llm(engine, temp, max_tokens, with_suffix=False):
     elif engine.startswith("claude"):
         load_dotenv(); anthropic_key = os.getenv("ANTHROPIC_API_KEY")
         llm = AnthropicLLM((anthropic_key, engine))
-    elif engine.startswith("hf") or engine.startswith("llama-2") :
+    elif engine.startswith("hf") or engine.startswith("llama-2") or engine.startswith("socius"):
         llm = HF_API_LLM((engine, max_tokens, temp))
     # elif engine.startswith("gemini"):
     #     load_dotenv(); gemini_key = os.getenv("GOOGLE_CREDENTIALS_FILENAME2")

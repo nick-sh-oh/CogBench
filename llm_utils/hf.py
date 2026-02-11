@@ -35,6 +35,8 @@ class HF_API_LLM(LLM):
                 engine = 'meta-llama/L' +engine[1:].replace('-chat', '') + 'b-chat-hf'
             else:
                 engine = 'meta-llama/L' +engine[1:] + 'b-hf'
+        elif engine.startswith('socius/'):
+            pass  # already a full HF model path
         else:
             print("Wrong engine name for HF API LLM")
             raise NotImplementedError
