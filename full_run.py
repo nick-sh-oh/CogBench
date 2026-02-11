@@ -24,6 +24,46 @@ Note:
 import os
 import argparse
 import subprocess
+import pandas as pd
+
+
+def ensure_engine_in_llm_features(engine):
+    """
+    Check if the engine exists in Analysis/data/llm_features.csv.
+    If not, add a row with default values so the analysis pipeline includes it.
+    """
+    features_path = os.path.join('Analysis', 'data', 'llm_features.csv')
+    df = pd.read_csv(features_path)
+
+    # Strip _cot/_sb suffix to get the base engine name
+    base_engine = engine
+    if base_engine.endswith('_cot'):
+        base_engine = base_engine[:-4]
+    elif base_engine.endswith('_sb'):
+        base_engine = base_engine[:-3]
+
+    if base_engine not in df['Engine'].values:
+        new_row = {
+            'Engine': base_engine,
+            'No of Parameters': 'n_a',
+            'Finetuned version of LLM': 'No',
+            'Use of RLHF': 'No',
+            'Open Source': 'Yes',
+            'Size of dataset': 'n_a',
+            'context length': 'n_a',
+            'conversational': 'No',
+            'code': 'No',
+            'longlora': 'No',
+            'longQA': 'No',
+            'Step Back': 'No',
+            'Chain of Thought': 'No',
+        }
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        df.to_csv(features_path, index=False)
+        print(f'Added engine "{base_engine}" to {features_path} with default feature values.')
+    else:
+        print(f'Engine "{base_engine}" already exists in {features_path}.')
+
 
 def run_benchmark(engine):
     """
@@ -38,6 +78,8 @@ def run_benchmark(engine):
     """
     experiments_dir = './Experiments'
     analysis_dir = './Analysis'
+
+    ensure_engine_in_llm_features(engine)
 
     if not args.only_analysis:
         # Get all the experiment folders
